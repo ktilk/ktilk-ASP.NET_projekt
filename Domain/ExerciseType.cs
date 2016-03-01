@@ -8,5 +8,9 @@ namespace Domain
 {
     public class ExerciseType
     {
+        public int ExerciseTypeID { get; set; }
+        public string ExerciseTypeName { get; set; }
+        public string Description { get; set; }
+        public List<Exercise> Exercises { get; set; }
     }
 }
