@@ -12,6 +12,7 @@ namespace Domain
         public string PlanName { get; set; }
         public int? Rating { get; set; }
         public string Description { get; set; }
+        public string Instructions { get; set; }
         public int PlanTypeID { get; set; }
         public PlanType PlanType { get; set; }
         public DateTime DateCreated { get; set; }

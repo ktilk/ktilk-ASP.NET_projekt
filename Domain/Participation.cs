@@ -13,6 +13,6 @@ namespace Domain
         public Person Person { get; set; }
         public int CompetitionID { get; set; }
         public Competition Competition { get; set; }
-        public int Score { get; set; }
+        public int? Score { get; set; }
     }
 }

@@ -15,7 +15,7 @@ namespace Domain
         public string Description { get; set; }
         public string Instructions { get; set; }
         public string VideoUrl { get; set; }
-        public int Rating { get; set; }
+        public int? Rating { get; set; }
         public DateTime DateCreated { get; set; }
         public List<ExerciseInWorkout> ExercisesInWorkouts { get; set; }
     }

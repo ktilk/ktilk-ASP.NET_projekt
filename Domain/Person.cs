@@ -11,8 +11,8 @@ namespace Domain
         public int PersonID { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
-        public int Height { get; set; }
-        public int Weight { get; set; }
+        public int? Height { get; set; }
+        public int? Weight { get; set; }
         public DateTime BirthDate { get; set; }
         public DateTime? DateCreated { get; set; }
         public List<Contact> Contacts { get; set; }
