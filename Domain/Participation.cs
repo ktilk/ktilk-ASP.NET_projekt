@@ -10,9 +10,9 @@ namespace Domain
     {
         public int ParticipationID { get; set; }
         public int PersonID { get; set; }
-        public Person Person { get; set; }
+        public virtual Person Person { get; set; }
         public int CompetitionID { get; set; }
-        public Competition Competition { get; set; }
+        public virtual Competition Competition { get; set; }
         public int? Score { get; set; }
     }
 }

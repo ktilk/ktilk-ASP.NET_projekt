@@ -14,11 +14,11 @@ namespace Domain
         public string Description { get; set; }
         public string Instructions { get; set; }
         public int PlanTypeID { get; set; }
-        public PlanType PlanType { get; set; }
+        public virtual PlanType PlanType { get; set; }
         public DateTime DateCreated { get; set; }
         public DateTime? DateClosed { get; set; }
         public string Duration { get; set; }
         public int PersonID { get; set; }
-        public List<Workout> Workouts { get; set; }
+        public virtual List<Workout> Workouts { get; set; }
     }
 }

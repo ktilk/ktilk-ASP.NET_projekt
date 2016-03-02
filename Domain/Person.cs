@@ -15,8 +15,8 @@ namespace Domain
         public int? Weight { get; set; }
         public DateTime BirthDate { get; set; }
         public DateTime? DateCreated { get; set; }
-        public List<Contact> Contacts { get; set; }
-        public List<Plan> Plans { get; set; }
-        public List<Participation> Participations { get; set; }
+        public virtual List<Contact> Contacts { get; set; }
+        public virtual List<Plan> Plans { get; set; }
+        public virtual List<Participation> Participations { get; set; }
     }
 }

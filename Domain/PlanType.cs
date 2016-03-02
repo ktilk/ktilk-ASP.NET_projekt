@@ -11,6 +11,6 @@ namespace Domain
         public int PlanTypeID { get; set; }
         public string PlanTypeName { get; set; }
         public string Description { get; set; }
-        public List<Plan> Plans { get; set; }
+        public virtual List<Plan> Plans { get; set; }
     }
 }

@@ -11,8 +11,8 @@ namespace Domain
         public int ContactID { get; set; }
         public string Value { get; set; }
         public int ContactTypeID { get; set; }
-        public ContactType ContactType { get; set; }
+        public virtual ContactType ContactType { get; set; }
         public int PersonID { get; set; }
-        public Person Person { get; set; }
+        public virtual Person Person { get; set; }
     }
 }

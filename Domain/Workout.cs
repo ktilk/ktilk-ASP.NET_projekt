@@ -12,7 +12,7 @@ namespace Domain
         public DateTime Date { get; set; }
         public string Duration { get; set; }
         public int PlanID { get; set; }
-        public Plan Plan { get; set; }
-        public List<ExerciseInWorkout> ExercisesWorkouts { get; set; }
+        public virtual Plan Plan { get; set; }
+        public virtual List<ExerciseInWorkout> ExercisesWorkouts { get; set; }
     }
 }
