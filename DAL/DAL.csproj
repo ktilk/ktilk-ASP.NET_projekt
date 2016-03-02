@@ -50,6 +50,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="GymDbContext.cs" />
+    <Compile Include="Migrations\201603021044323_InitialMigration.cs" />
+    <Compile Include="Migrations\201603021044323_InitialMigration.Designer.cs">
+      <DependentUpon>201603021044323_InitialMigration.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\MigrationConfiguration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -61,6 +66,11 @@
       <Project>{e433c82c-0d7d-4d46-8898-b35f046cbfdb}</Project>
       <Name>Domain</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Migrations\201603021044323_InitialMigration.resx">
+      <DependentUpon>201603021044323_InitialMigration.cs</DependentUpon>
+    </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

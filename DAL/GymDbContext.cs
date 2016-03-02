@@ -5,6 +5,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using DAL.Migrations;
 using Domain;
 
 namespace DAL
@@ -13,8 +14,8 @@ namespace DAL
     {
         public GymDbContext() : base("DbConnectionString")
         {
-            Database.SetInitializer(new DropCreateDatabaseIfModelChanges<GymDbContext>());
-            //Database.SetInitializer(new MigrateDatabaseToLatestVersion<GymDbContext, MigrationConfiguration>());
+            //Database.SetInitializer(new DropCreateDatabaseIfModelChanges<GymDbContext>());
+            Database.SetInitializer(new MigrateDatabaseToLatestVersion<GymDbContext, MigrationConfiguration>());
 #if DEBUG
             Database.Log = s => Trace.Write(s);
 #endif
