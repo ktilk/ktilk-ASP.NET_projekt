@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using DAL.Interfaces;
 using Domain;
+using Domain.Aggregate;
 
 namespace DAL.Repositories
 {
@@ -13,6 +14,11 @@ namespace DAL.Repositories
     {
         public PersonRepository(DbContext dbContext) : base(dbContext)
         {
+        }
+
+        public List<PersonWithContactCount> GetPersonWithContactCounts()
+        {
+            return DbSet.Select(p => new PersonWithContactCount() {Person = p, ContactCount = p.Contacts.Count}).ToList();
         }
     }
 }

@@ -49,6 +49,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Aggregate\PersonWithContactCount.cs" />
     <Compile Include="Competition.cs" />
     <Compile Include="Contact.cs" />
     <Compile Include="ContactType.cs" />

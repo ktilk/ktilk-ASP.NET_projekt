@@ -7,18 +7,20 @@ using System.Net;
 using System.Web;
 using System.Web.Mvc;
 using DAL;
+using DAL.Interfaces;
+using DAL.Repositories;
 using Domain;
 
 namespace Web.Controllers
 {
     public class CompetitionsController : Controller
     {
-        private GymDbContext db = new GymDbContext();
-
+        //private GymDbContext db = new GymDbContext();
+        private readonly ICompetitionRepository _competitionRepository = new CompetitionRepository(new GymDbContext());
         // GET: Competitions
         public ActionResult Index()
         {
-            return View(db.Competitions.ToList());
+            return View(_competitionRepository.All);
         }
 
         // GET: Competitions/Details/5
@@ -28,7 +30,7 @@ namespace Web.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Competition competition = db.Competitions.Find(id);
+            Competition competition = _competitionRepository.GetById(id);
             if (competition == null)
             {
                 return HttpNotFound();
@@ -51,8 +53,8 @@ namespace Web.Controllers
         {
             if (ModelState.IsValid)
             {
-                db.Competitions.Add(competition);
-                db.SaveChanges();
+                _competitionRepository.Add(competition);
+                _competitionRepository.SaveChanges();
                 return RedirectToAction("Index");
             }
 
@@ -66,7 +68,7 @@ namespace Web.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Competition competition = db.Competitions.Find(id);
+            Competition competition = _competitionRepository.GetById(id);
             if (competition == null)
             {
                 return HttpNotFound();
@@ -83,8 +85,8 @@ namespace Web.Controllers
         {
             if (ModelState.IsValid)
             {
-                db.Entry(competition).State = EntityState.Modified;
-                db.SaveChanges();
+                _competitionRepository.Update(competition);
+                _competitionRepository.SaveChanges();
                 return RedirectToAction("Index");
             }
             return View(competition);
@@ -97,7 +99,7 @@ namespace Web.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Competition competition = db.Competitions.Find(id);
+            Competition competition = _competitionRepository.GetById(id);
             if (competition == null)
             {
                 return HttpNotFound();
@@ -110,9 +112,8 @@ namespace Web.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int id)
         {
-            Competition competition = db.Competitions.Find(id);
-            db.Competitions.Remove(competition);
-            db.SaveChanges();
+            _competitionRepository.Delete(id);
+            _competitionRepository.SaveChanges();
             return RedirectToAction("Index");
         }
 
@@ -120,7 +121,7 @@ namespace Web.Controllers
         {
             if (disposing)
             {
-                db.Dispose();
+                _competitionRepository.Dispose();
             }
             base.Dispose(disposing);
         }

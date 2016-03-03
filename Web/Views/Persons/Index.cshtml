@@ -1,4 +1,4 @@
-﻿@model IEnumerable<Domain.Person>
+﻿@model List<Domain.Aggregate.PersonWithContactCount>
 
 @{
     ViewBag.Title = "Index";
@@ -12,22 +12,22 @@
 <table class="table">
     <tr>
         <th>
-            @Html.DisplayNameFor(model => model.FirstName)
+            @Html.DisplayNameFor(model => model.FirstOrDefault().Person.FirstName)
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.LastName)
+            @Html.DisplayNameFor(model => model.FirstOrDefault().Person.LastName)
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.Height)
+            @Html.DisplayNameFor(model => model.FirstOrDefault().Person.Height)
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.Weight)
+            @Html.DisplayNameFor(model => model.FirstOrDefault().Person.Weight)
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.BirthDate)
+            @Html.DisplayNameFor(model => model.FirstOrDefault().Person.BirthDate)
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.DateCreated)
+            @Html.DisplayNameFor(model => model.FirstOrDefault().Person.DateCreated)
         </th>
         <th>
             Contact count
@@ -38,30 +38,30 @@
 @foreach (var item in Model) {
     <tr>
         <td>
-            @Html.DisplayFor(modelItem => item.FirstName)
+            @Html.DisplayFor(modelItem => item.Person.FirstName)
         </td>
         <td>
-            @Html.DisplayFor(modelItem => item.LastName)
+            @Html.DisplayFor(modelItem => item.Person.LastName)
         </td>
         <td>
-            @Html.DisplayFor(modelItem => item.Height)
+            @Html.DisplayFor(modelItem => item.Person.Height)
         </td>
         <td>
-            @Html.DisplayFor(modelItem => item.Weight)
+            @Html.DisplayFor(modelItem => item.Person.Weight)
         </td>
         <td>
-            @Html.DisplayFor(modelItem => item.BirthDate)
+            @Html.DisplayFor(modelItem => item.Person.BirthDate)
         </td>
         <td>
-            @Html.DisplayFor(modelItem => item.DateCreated)
+            @Html.DisplayFor(modelItem => item.Person.DateCreated)
         </td>
         <td>
-            @item.Contacts.Count
+            @Html.DisplayFor(modelItem => item.ContactCount)
         </td>
         <td>
-            @Html.ActionLink("Edit", "Edit", new { id=item.PersonID }) |
-            @Html.ActionLink("Details", "Details", new { id=item.PersonID }) |
-            @Html.ActionLink("Delete", "Delete", new { id=item.PersonID })
+            @Html.ActionLink("Edit", "Edit", new { id=item.Person.PersonID }) |
+            @Html.ActionLink("Details", "Details", new { id=item.Person.PersonID }) |
+            @Html.ActionLink("Delete", "Delete", new { id=item.Person.PersonID })
         </td>
     </tr>
 }

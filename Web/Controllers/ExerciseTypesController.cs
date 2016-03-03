@@ -7,18 +7,20 @@ using System.Net;
 using System.Web;
 using System.Web.Mvc;
 using DAL;
+using DAL.Interfaces;
+using DAL.Repositories;
 using Domain;
 
 namespace Web.Controllers
 {
     public class ExerciseTypesController : Controller
     {
-        private GymDbContext db = new GymDbContext();
-
+        //private GymDbContext db = new GymDbContext();
+        private readonly IExerciseTypeRepository _exerciseTypeRepository = new ExerciseTypeRepository(new GymDbContext());
         // GET: ExerciseTypes
         public ActionResult Index()
         {
-            return View(db.ExerciseTypes.ToList());
+            return View(_exerciseTypeRepository.All);
         }
 
         // GET: ExerciseTypes/Details/5
@@ -28,7 +30,7 @@ namespace Web.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            ExerciseType exerciseType = db.ExerciseTypes.Find(id);
+            ExerciseType exerciseType = _exerciseTypeRepository.GetById(id);
             if (exerciseType == null)
             {
                 return HttpNotFound();
@@ -51,8 +53,8 @@ namespace Web.Controllers
         {
             if (ModelState.IsValid)
             {
-                db.ExerciseTypes.Add(exerciseType);
-                db.SaveChanges();
+                _exerciseTypeRepository.Add(exerciseType);
+                _exerciseTypeRepository.SaveChanges();
                 return RedirectToAction("Index");
             }
 
@@ -66,7 +68,7 @@ namespace Web.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            ExerciseType exerciseType = db.ExerciseTypes.Find(id);
+            ExerciseType exerciseType = _exerciseTypeRepository.GetById(id);
             if (exerciseType == null)
             {
                 return HttpNotFound();
@@ -83,8 +85,8 @@ namespace Web.Controllers
         {
             if (ModelState.IsValid)
             {
-                db.Entry(exerciseType).State = EntityState.Modified;
-                db.SaveChanges();
+                _exerciseTypeRepository.Update(exerciseType);
+                _exerciseTypeRepository.SaveChanges();
                 return RedirectToAction("Index");
             }
             return View(exerciseType);
@@ -97,7 +99,7 @@ namespace Web.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            ExerciseType exerciseType = db.ExerciseTypes.Find(id);
+            ExerciseType exerciseType = _exerciseTypeRepository.GetById(id);
             if (exerciseType == null)
             {
                 return HttpNotFound();
@@ -110,9 +112,8 @@ namespace Web.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int id)
         {
-            ExerciseType exerciseType = db.ExerciseTypes.Find(id);
-            db.ExerciseTypes.Remove(exerciseType);
-            db.SaveChanges();
+            _exerciseTypeRepository.Delete(id);
+            _exerciseTypeRepository.SaveChanges();
             return RedirectToAction("Index");
         }
 
@@ -120,7 +121,7 @@ namespace Web.Controllers
         {
             if (disposing)
             {
-                db.Dispose();
+                _exerciseTypeRepository.Dispose();
             }
             base.Dispose(disposing);
         }

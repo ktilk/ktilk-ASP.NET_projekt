@@ -7,6 +7,8 @@ using System.Net;
 using System.Web;
 using System.Web.Mvc;
 using DAL;
+using DAL.Interfaces;
+using DAL.Repositories;
 using Domain;
 
 namespace Web.Controllers
@@ -14,12 +16,12 @@ namespace Web.Controllers
     public class ParticipationsController : Controller
     {
         private GymDbContext db = new GymDbContext();
-
+        private readonly IParticipationRepository _participationRepository = new ParticipationRepository(new GymDbContext());
         // GET: Participations
         public ActionResult Index()
         {
             var participations = db.Participations.Include(p => p.Competition).Include(p => p.Person);
-            return View(participations.ToList());
+            return View(_participationRepository.All);
         }
 
         // GET: Participations/Details/5
@@ -29,7 +31,7 @@ namespace Web.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Participation participation = db.Participations.Find(id);
+            Participation participation = _participationRepository.GetById(id);
             if (participation == null)
             {
                 return HttpNotFound();
@@ -54,8 +56,8 @@ namespace Web.Controllers
         {
             if (ModelState.IsValid)
             {
-                db.Participations.Add(participation);
-                db.SaveChanges();
+                _participationRepository.Add(participation);
+                _participationRepository.SaveChanges();
                 return RedirectToAction("Index");
             }
 
@@ -71,7 +73,7 @@ namespace Web.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Participation participation = db.Participations.Find(id);
+            Participation participation = _participationRepository.GetById(id);
             if (participation == null)
             {
                 return HttpNotFound();
@@ -90,8 +92,8 @@ namespace Web.Controllers
         {
             if (ModelState.IsValid)
             {
-                db.Entry(participation).State = EntityState.Modified;
-                db.SaveChanges();
+                _participationRepository.Update(participation);
+                _participationRepository.SaveChanges();
                 return RedirectToAction("Index");
             }
             ViewBag.CompetitionID = new SelectList(db.Competitions, "CompetitionID", "CompetitionName", participation.CompetitionID);
@@ -106,7 +108,7 @@ namespace Web.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Participation participation = db.Participations.Find(id);
+            Participation participation = _participationRepository.GetById(id);
             if (participation == null)
             {
                 return HttpNotFound();
@@ -119,9 +121,8 @@ namespace Web.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int id)
         {
-            Participation participation = db.Participations.Find(id);
-            db.Participations.Remove(participation);
-            db.SaveChanges();
+            _participationRepository.Delete(id);
+            _participationRepository.SaveChanges();
             return RedirectToAction("Index");
         }
 
@@ -129,7 +130,7 @@ namespace Web.Controllers
         {
             if (disposing)
             {
-                db.Dispose();
+                _participationRepository.Dispose();
             }
             base.Dispose(disposing);
         }

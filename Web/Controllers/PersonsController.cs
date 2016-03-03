@@ -21,7 +21,8 @@ namespace Web.Controllers
         // GET: Persons
         public ActionResult Index()
         {
-            return View(_personRepository.All);
+            var vm = _personRepository.GetPersonWithContactCounts();
+            return View(vm);
         }
 
         // GET: Persons/Details/5

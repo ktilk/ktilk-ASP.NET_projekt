@@ -7,6 +7,8 @@ using System.Net;
 using System.Web;
 using System.Web.Mvc;
 using DAL;
+using DAL.Interfaces;
+using DAL.Repositories;
 using Domain;
 
 namespace Web.Controllers
@@ -14,12 +16,12 @@ namespace Web.Controllers
     public class ExerciseInWorkoutsController : Controller
     {
         private GymDbContext db = new GymDbContext();
-
+        private readonly IExerciseInWorkoutRepository _exerciseInWorkoutRepository = new ExerciseInWorkoutRepository(new GymDbContext());
         // GET: ExerciseInWorkouts
         public ActionResult Index()
         {
-            var exercisesInWorkouts = db.ExercisesInWorkouts.Include(e => e.Exercise).Include(e => e.Workout);
-            return View(exercisesInWorkouts.ToList());
+            //var exercisesInWorkouts = db.ExercisesInWorkouts.Include(e => e.Exercise).Include(e => e.Workout);
+            return View(_exerciseInWorkoutRepository.All);
         }
 
         // GET: ExerciseInWorkouts/Details/5
@@ -29,7 +31,7 @@ namespace Web.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            ExerciseInWorkout exerciseInWorkout = db.ExercisesInWorkouts.Find(id);
+            ExerciseInWorkout exerciseInWorkout = _exerciseInWorkoutRepository.GetById(id);
             if (exerciseInWorkout == null)
             {
                 return HttpNotFound();
@@ -54,8 +56,8 @@ namespace Web.Controllers
         {
             if (ModelState.IsValid)
             {
-                db.ExercisesInWorkouts.Add(exerciseInWorkout);
-                db.SaveChanges();
+                _exerciseInWorkoutRepository.Add(exerciseInWorkout);
+                _exerciseInWorkoutRepository.SaveChanges();
                 return RedirectToAction("Index");
             }
 
@@ -71,7 +73,7 @@ namespace Web.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            ExerciseInWorkout exerciseInWorkout = db.ExercisesInWorkouts.Find(id);
+            ExerciseInWorkout exerciseInWorkout = _exerciseInWorkoutRepository.GetById(id);
             if (exerciseInWorkout == null)
             {
                 return HttpNotFound();
@@ -90,8 +92,8 @@ namespace Web.Controllers
         {
             if (ModelState.IsValid)
             {
-                db.Entry(exerciseInWorkout).State = EntityState.Modified;
-                db.SaveChanges();
+                _exerciseInWorkoutRepository.Update(exerciseInWorkout);
+                _exerciseInWorkoutRepository.SaveChanges();
                 return RedirectToAction("Index");
             }
             ViewBag.ExerciseID = new SelectList(db.Exercises, "ExerciseID", "ExerciseName", exerciseInWorkout.ExerciseID);
@@ -106,7 +108,7 @@ namespace Web.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            ExerciseInWorkout exerciseInWorkout = db.ExercisesInWorkouts.Find(id);
+            ExerciseInWorkout exerciseInWorkout = _exerciseInWorkoutRepository.GetById(id);
             if (exerciseInWorkout == null)
             {
                 return HttpNotFound();
@@ -119,9 +121,8 @@ namespace Web.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int id)
         {
-            ExerciseInWorkout exerciseInWorkout = db.ExercisesInWorkouts.Find(id);
-            db.ExercisesInWorkouts.Remove(exerciseInWorkout);
-            db.SaveChanges();
+            _exerciseInWorkoutRepository.Delete(id);
+            _exerciseInWorkoutRepository.SaveChanges();
             return RedirectToAction("Index");
         }
 
@@ -129,7 +130,7 @@ namespace Web.Controllers
         {
             if (disposing)
             {
-                db.Dispose();
+                _exerciseInWorkoutRepository.Dispose();
             }
             base.Dispose(disposing);
         }

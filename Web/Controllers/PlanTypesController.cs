@@ -7,18 +7,20 @@ using System.Net;
 using System.Web;
 using System.Web.Mvc;
 using DAL;
+using DAL.Interfaces;
+using DAL.Repositories;
 using Domain;
 
 namespace Web.Controllers
 {
     public class PlanTypesController : Controller
     {
-        private GymDbContext db = new GymDbContext();
-
+        //private GymDbContext db = new GymDbContext();
+        private readonly IPlanTypeRepository _planTypeRepository = new PlanTypeRepository(new GymDbContext());
         // GET: PlanTypes
         public ActionResult Index()
         {
-            return View(db.PlanTypes.ToList());
+            return View(_planTypeRepository.All);
         }
 
         // GET: PlanTypes/Details/5
@@ -28,7 +30,7 @@ namespace Web.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            PlanType planType = db.PlanTypes.Find(id);
+            PlanType planType = _planTypeRepository.GetById(id);
             if (planType == null)
             {
                 return HttpNotFound();
@@ -51,8 +53,8 @@ namespace Web.Controllers
         {
             if (ModelState.IsValid)
             {
-                db.PlanTypes.Add(planType);
-                db.SaveChanges();
+                _planTypeRepository.Add(planType);
+                _planTypeRepository.SaveChanges();
                 return RedirectToAction("Index");
             }
 
@@ -66,7 +68,7 @@ namespace Web.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            PlanType planType = db.PlanTypes.Find(id);
+            PlanType planType = _planTypeRepository.GetById(id);
             if (planType == null)
             {
                 return HttpNotFound();
@@ -83,8 +85,8 @@ namespace Web.Controllers
         {
             if (ModelState.IsValid)
             {
-                db.Entry(planType).State = EntityState.Modified;
-                db.SaveChanges();
+                _planTypeRepository.Update(planType);
+                _planTypeRepository.SaveChanges();
                 return RedirectToAction("Index");
             }
             return View(planType);
@@ -97,7 +99,7 @@ namespace Web.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            PlanType planType = db.PlanTypes.Find(id);
+            PlanType planType = _planTypeRepository.GetById(id);
             if (planType == null)
             {
                 return HttpNotFound();
@@ -110,9 +112,8 @@ namespace Web.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int id)
         {
-            PlanType planType = db.PlanTypes.Find(id);
-            db.PlanTypes.Remove(planType);
-            db.SaveChanges();
+            _planTypeRepository.Delete(id);
+            _planTypeRepository.SaveChanges();
             return RedirectToAction("Index");
         }
 
@@ -120,7 +121,7 @@ namespace Web.Controllers
         {
             if (disposing)
             {
-                db.Dispose();
+                _planTypeRepository.Dispose();
             }
             base.Dispose(disposing);
         }
