@@ -11,7 +11,7 @@ namespace DAL.Repositories
 {
     public class CompetitionRepository : EFRepository<Competition>, ICompetitionRepository
     {
-        public CompetitionRepository(DbContext dbContext) : base(dbContext)
+        public CompetitionRepository(IDbContext dbContext) : base(dbContext)
         {
         }
     }

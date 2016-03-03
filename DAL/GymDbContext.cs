@@ -5,12 +5,13 @@ using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using DAL.Interfaces;
 using DAL.Migrations;
 using Domain;
 
 namespace DAL
 {
-    public class GymDbContext : DbContext
+    public class GymDbContext : DbContext, IDbContext
     {
         public GymDbContext() : base("DbConnectionString")
         {

@@ -11,7 +11,7 @@ namespace DAL.Repositories
 {
     public class ContactRepository : EFRepository<Contact>, IContactRepository
     {
-        public ContactRepository(DbContext dbContext) : base(dbContext)
+        public ContactRepository(IDbContext dbContext) : base(dbContext)
         {
         }
     }

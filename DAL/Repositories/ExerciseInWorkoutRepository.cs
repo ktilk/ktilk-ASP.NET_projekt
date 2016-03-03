@@ -11,7 +11,7 @@ namespace DAL.Repositories
 {
     public class ExerciseInWorkoutRepository : EFRepository<ExerciseInWorkout>, IExerciseInWorkoutRepository
     {
-        public ExerciseInWorkoutRepository(DbContext dbContext) : base(dbContext)
+        public ExerciseInWorkoutRepository(IDbContext dbContext) : base(dbContext)
         {
         }
     }

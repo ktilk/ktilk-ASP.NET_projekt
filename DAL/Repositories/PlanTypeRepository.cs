@@ -11,7 +11,7 @@ namespace DAL.Repositories
 {
     public class PlanTypeRepository : EFRepository<PlanType>, IPlanTypeRepository
     {
-        public PlanTypeRepository(DbContext dbContext) : base(dbContext)
+        public PlanTypeRepository(IDbContext dbContext) : base(dbContext)
         {
         }
     }

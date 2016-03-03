@@ -17,7 +17,13 @@ namespace Web.Controllers
     {
         //private GymDbContext db = new GymDbContext();
 
-        private readonly IPersonRepository _personRepository = new PersonRepository(new GymDbContext());
+        private readonly IPersonRepository _personRepository;// = new PersonRepository(new GymDbContext());
+
+        public PersonsController(IPersonRepository personRepository)
+        {
+            _personRepository = personRepository;
+        }
+
         // GET: Persons
         public ActionResult Index()
         {

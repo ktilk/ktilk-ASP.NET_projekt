@@ -11,7 +11,7 @@ namespace DAL.Repositories
 {
     public class ParticipationRepository : EFRepository<Participation>, IParticipationRepository
     {
-        public ParticipationRepository(DbContext dbContext) : base(dbContext)
+        public ParticipationRepository(IDbContext dbContext) : base(dbContext)
         {
         }
     }

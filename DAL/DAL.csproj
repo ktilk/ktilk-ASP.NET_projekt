@@ -53,6 +53,7 @@
     <Compile Include="Interfaces\ICompetitionRepository.cs" />
     <Compile Include="Interfaces\IContactRepository.cs" />
     <Compile Include="Interfaces\IContactTypeRepository.cs" />
+    <Compile Include="Interfaces\IDbContext.cs" />
     <Compile Include="Interfaces\IExerciseTypeRepository.cs" />
     <Compile Include="Interfaces\IEFRepository.cs" />
     <Compile Include="Interfaces\IExerciseInWorkoutRepository.cs" />
