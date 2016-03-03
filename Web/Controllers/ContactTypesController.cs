@@ -7,18 +7,21 @@ using System.Net;
 using System.Web;
 using System.Web.Mvc;
 using DAL;
+using DAL.Interfaces;
+using DAL.Repositories;
 using Domain;
 
 namespace Web.Controllers
 {
     public class ContactTypesController : Controller
     {
-        private GymDbContext db = new GymDbContext();
+        //private GymDbContext db = new GymDbContext();
+        private readonly IContactTypeRepository _contactTypeRepository = new ContactTypeRepository(new GymDbContext());
 
         // GET: ContactTypes
         public ActionResult Index()
         {
-            return View(db.ContactTypes.ToList());
+            return View(_contactTypeRepository.All);
         }
 
         // GET: ContactTypes/Details/5
@@ -28,7 +31,7 @@ namespace Web.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            ContactType contactType = db.ContactTypes.Find(id);
+            ContactType contactType = _contactTypeRepository.GetById(id);
             if (contactType == null)
             {
                 return HttpNotFound();
@@ -51,8 +54,8 @@ namespace Web.Controllers
         {
             if (ModelState.IsValid)
             {
-                db.ContactTypes.Add(contactType);
-                db.SaveChanges();
+                _contactTypeRepository.Add(contactType);
+                _contactTypeRepository.SaveChanges();
                 return RedirectToAction("Index");
             }
 
@@ -66,7 +69,7 @@ namespace Web.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            ContactType contactType = db.ContactTypes.Find(id);
+            ContactType contactType = _contactTypeRepository.GetById(id);
             if (contactType == null)
             {
                 return HttpNotFound();
@@ -83,8 +86,8 @@ namespace Web.Controllers
         {
             if (ModelState.IsValid)
             {
-                db.Entry(contactType).State = EntityState.Modified;
-                db.SaveChanges();
+                _contactTypeRepository.Update(contactType);
+                _contactTypeRepository.SaveChanges();
                 return RedirectToAction("Index");
             }
             return View(contactType);
@@ -97,7 +100,7 @@ namespace Web.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            ContactType contactType = db.ContactTypes.Find(id);
+            ContactType contactType = _contactTypeRepository.GetById(id);
             if (contactType == null)
             {
                 return HttpNotFound();
@@ -110,9 +113,8 @@ namespace Web.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int id)
         {
-            ContactType contactType = db.ContactTypes.Find(id);
-            db.ContactTypes.Remove(contactType);
-            db.SaveChanges();
+            _contactTypeRepository.Delete(id);
+            _contactTypeRepository.SaveChanges();
             return RedirectToAction("Index");
         }
 
@@ -120,7 +122,7 @@ namespace Web.Controllers
         {
             if (disposing)
             {
-                db.Dispose();
+                _contactTypeRepository.Dispose();
             }
             base.Dispose(disposing);
         }

@@ -7,18 +7,21 @@ using System.Net;
 using System.Web;
 using System.Web.Mvc;
 using DAL;
+using DAL.Interfaces;
+using DAL.Repositories;
 using Domain;
 
 namespace Web.Controllers
 {
     public class PersonsController : Controller
     {
-        private GymDbContext db = new GymDbContext();
+        //private GymDbContext db = new GymDbContext();
 
+        private readonly IPersonRepository _personRepository = new PersonRepository(new GymDbContext());
         // GET: Persons
         public ActionResult Index()
         {
-            return View(db.Persons.ToList());
+            return View(_personRepository.All);
         }
 
         // GET: Persons/Details/5
@@ -28,7 +31,7 @@ namespace Web.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Person person = db.Persons.Find(id);
+            Person person = _personRepository.GetById(id);
             if (person == null)
             {
                 return HttpNotFound();
@@ -51,8 +54,8 @@ namespace Web.Controllers
         {
             if (ModelState.IsValid)
             {
-                db.Persons.Add(person);
-                db.SaveChanges();
+                _personRepository.Add(person);
+                _personRepository.SaveChanges();
                 return RedirectToAction("Index");
             }
 
@@ -66,7 +69,7 @@ namespace Web.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Person person = db.Persons.Find(id);
+            Person person = _personRepository.GetById(id);
             if (person == null)
             {
                 return HttpNotFound();
@@ -83,8 +86,8 @@ namespace Web.Controllers
         {
             if (ModelState.IsValid)
             {
-                db.Entry(person).State = EntityState.Modified;
-                db.SaveChanges();
+                _personRepository.Update(person);
+                _personRepository.SaveChanges();
                 return RedirectToAction("Index");
             }
             return View(person);
@@ -97,7 +100,7 @@ namespace Web.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Person person = db.Persons.Find(id);
+            Person person = _personRepository.GetById(id);
             if (person == null)
             {
                 return HttpNotFound();
@@ -110,9 +113,8 @@ namespace Web.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int id)
         {
-            Person person = db.Persons.Find(id);
-            db.Persons.Remove(person);
-            db.SaveChanges();
+            _personRepository.Delete(id);
+            _personRepository.SaveChanges();
             return RedirectToAction("Index");
         }
 
@@ -120,7 +122,7 @@ namespace Web.Controllers
         {
             if (disposing)
             {
-                db.Dispose();
+                _personRepository.Dispose();
             }
             base.Dispose(disposing);
         }
