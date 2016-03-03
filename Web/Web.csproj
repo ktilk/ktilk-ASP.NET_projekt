@@ -197,11 +197,19 @@
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\Startup.Auth.cs" />
     <Compile Include="Controllers\AccountController.cs" />
+    <Compile Include="Controllers\CompetitionsController.cs" />
     <Compile Include="Controllers\ContactsController.cs" />
     <Compile Include="Controllers\ContactTypesController.cs" />
+    <Compile Include="Controllers\ExerciseInWorkoutsController.cs" />
+    <Compile Include="Controllers\ExercisesController.cs" />
+    <Compile Include="Controllers\ExerciseTypesController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\ManageController.cs" />
+    <Compile Include="Controllers\ParticipationsController.cs" />
     <Compile Include="Controllers\PersonsController.cs" />
+    <Compile Include="Controllers\PlansController.cs" />
+    <Compile Include="Controllers\PlanTypesController.cs" />
+    <Compile Include="Controllers\WorkoutsController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -300,6 +308,46 @@
     <Content Include="Views\ContactTypes\Details.cshtml" />
     <Content Include="Views\ContactTypes\Edit.cshtml" />
     <Content Include="Views\ContactTypes\Index.cshtml" />
+    <Content Include="Views\Competitions\Create.cshtml" />
+    <Content Include="Views\Competitions\Delete.cshtml" />
+    <Content Include="Views\Competitions\Details.cshtml" />
+    <Content Include="Views\Competitions\Edit.cshtml" />
+    <Content Include="Views\Competitions\Index.cshtml" />
+    <Content Include="Views\Exercises\Create.cshtml" />
+    <Content Include="Views\Exercises\Delete.cshtml" />
+    <Content Include="Views\Exercises\Details.cshtml" />
+    <Content Include="Views\Exercises\Edit.cshtml" />
+    <Content Include="Views\Exercises\Index.cshtml" />
+    <Content Include="Views\ExerciseInWorkouts\Create.cshtml" />
+    <Content Include="Views\ExerciseInWorkouts\Delete.cshtml" />
+    <Content Include="Views\ExerciseInWorkouts\Details.cshtml" />
+    <Content Include="Views\ExerciseInWorkouts\Edit.cshtml" />
+    <Content Include="Views\ExerciseInWorkouts\Index.cshtml" />
+    <Content Include="Views\ExerciseTypes\Create.cshtml" />
+    <Content Include="Views\ExerciseTypes\Delete.cshtml" />
+    <Content Include="Views\ExerciseTypes\Details.cshtml" />
+    <Content Include="Views\ExerciseTypes\Edit.cshtml" />
+    <Content Include="Views\ExerciseTypes\Index.cshtml" />
+    <Content Include="Views\Participations\Create.cshtml" />
+    <Content Include="Views\Participations\Delete.cshtml" />
+    <Content Include="Views\Participations\Details.cshtml" />
+    <Content Include="Views\Participations\Edit.cshtml" />
+    <Content Include="Views\Participations\Index.cshtml" />
+    <Content Include="Views\Plans\Create.cshtml" />
+    <Content Include="Views\Plans\Delete.cshtml" />
+    <Content Include="Views\Plans\Details.cshtml" />
+    <Content Include="Views\Plans\Edit.cshtml" />
+    <Content Include="Views\Plans\Index.cshtml" />
+    <Content Include="Views\PlanTypes\Create.cshtml" />
+    <Content Include="Views\PlanTypes\Delete.cshtml" />
+    <Content Include="Views\PlanTypes\Details.cshtml" />
+    <Content Include="Views\PlanTypes\Edit.cshtml" />
+    <Content Include="Views\PlanTypes\Index.cshtml" />
+    <Content Include="Views\Workouts\Create.cshtml" />
+    <Content Include="Views\Workouts\Delete.cshtml" />
+    <Content Include="Views\Workouts\Details.cshtml" />
+    <Content Include="Views\Workouts\Edit.cshtml" />
+    <Content Include="Views\Workouts\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
