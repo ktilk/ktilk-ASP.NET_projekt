@@ -65,7 +65,15 @@ namespace Web
         {
             kernel.Bind<IDbContext>().To<GymDbContext>().InRequestScope();
             kernel.Bind<IPersonRepository>().To<PersonRepository>().InRequestScope();
-
+            kernel.Bind<IContactRepository>().To<ContactRepository>().InRequestScope();
+            kernel.Bind<IContactTypeRepository>().To<ContactTypeRepository>().InRequestScope();
+            kernel.Bind<IExerciseInWorkoutRepository>().To<ExerciseInWorkoutRepository>().InRequestScope();
+            kernel.Bind<IExerciseRepository>().To<ExerciseRepository>().InRequestScope();
+            kernel.Bind<IExerciseTypeRepository>().To<ExerciseTypeRepository>().InRequestScope();
+            kernel.Bind<IParticipationRepository>().To<ParticipationRepository>().InRequestScope();
+            kernel.Bind<IPlanRepository>().To<PlanRepository>().InRequestScope();
+            kernel.Bind<IPlanTypeRepository>().To<PlanTypeRepository>().InRequestScope();
+            kernel.Bind<IWorkoutRepository>().To<WorkoutRepository>().InRequestScope();
         }        
     }
 }
