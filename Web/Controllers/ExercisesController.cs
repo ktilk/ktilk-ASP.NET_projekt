@@ -16,7 +16,12 @@ namespace Web.Controllers
     public class ExercisesController : Controller
     {
         private GymDbContext db = new GymDbContext();
-        private readonly IExerciseRepository _exerciseRepository = new ExerciseRepository(new GymDbContext());
+        private readonly IExerciseRepository _exerciseRepository;// = new ExerciseRepository(new GymDbContext());
+
+        public ExercisesController(IExerciseRepository exerciseRepository)
+        {
+            _exerciseRepository = exerciseRepository;
+        }
 
         // GET: Exercises
         public ActionResult Index()

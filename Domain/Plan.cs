@@ -18,7 +18,7 @@ namespace Domain
         public DateTime DateCreated { get; set; }
         public DateTime? DateClosed { get; set; }
         public string Duration { get; set; }
-        public int PersonID { get; set; }
+        public int PersonID { get; set; } //TODO lappes
         public virtual List<Workout> Workouts { get; set; }
     }
 }

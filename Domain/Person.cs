@@ -8,6 +8,7 @@ namespace Domain
 {
     public class Person
     {
+        //TODO stringide pikkused piirata ja värki
         public int PersonID { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }

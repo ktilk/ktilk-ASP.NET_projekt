@@ -16,7 +16,12 @@ namespace Web.Controllers
     public class ContactTypesController : Controller
     {
         //private GymDbContext db = new GymDbContext();
-        private readonly IContactTypeRepository _contactTypeRepository = new ContactTypeRepository(new GymDbContext());
+        private readonly IContactTypeRepository _contactTypeRepository;// = new ContactTypeRepository(new GymDbContext());
+
+        public ContactTypesController(IContactTypeRepository contactTypeRepository)
+        {
+            _contactTypeRepository = contactTypeRepository;
+        }
 
         // GET: ContactTypes
         public ActionResult Index()

@@ -16,7 +16,13 @@ namespace Web.Controllers
     public class ParticipationsController : Controller
     {
         private GymDbContext db = new GymDbContext();
-        private readonly IParticipationRepository _participationRepository = new ParticipationRepository(new GymDbContext());
+        private readonly IParticipationRepository _participationRepository;// = new ParticipationRepository(new GymDbContext());
+
+        public ParticipationsController(IParticipationRepository participationRepository)
+        {
+            _participationRepository = participationRepository;
+        }
+
         // GET: Participations
         public ActionResult Index()
         {

@@ -16,7 +16,13 @@ namespace Web.Controllers
     public class PlansController : Controller
     {
         private GymDbContext db = new GymDbContext();
-        private readonly IPlanRepository _planRepository = new PlanRepository(new GymDbContext());
+        private readonly IPlanRepository _planRepository;// = new PlanRepository(new GymDbContext());
+
+        public PlansController(IPlanRepository planRepository)
+        {
+            _planRepository = planRepository;
+        }
+
         // GET: Plans
         public ActionResult Index()
         {
