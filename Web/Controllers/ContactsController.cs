@@ -15,13 +15,19 @@ namespace Web.Controllers
 {
     public class ContactsController : Controller
     {
-        private GymDbContext db = new GymDbContext();
-        private readonly IContactRepository _contactRepository = new ContactRepository(new GymDbContext());
+        //private GymDbContext db = new GymDbContext();
+        private readonly IUOW _uow;
+
+        public ContactsController(IUOW uow)
+        {
+            _uow = uow;
+        }
+
         // GET: Contacts
         public ActionResult Index()
         {
             //var contacts = db.Contacts.Include(c => c.ContactType).Include(c => c.Person);
-            return View(_contactRepository.All);
+            return View(_uow.Contacts.All);
         }
 
         // GET: Contacts/Details/5
@@ -31,7 +37,7 @@ namespace Web.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Contact contact = _contactRepository.GetById(id);
+            Contact contact = _uow.Contacts.GetById(id);
             if (contact == null)
             {
                 return HttpNotFound();
@@ -42,8 +48,8 @@ namespace Web.Controllers
         // GET: Contacts/Create
         public ActionResult Create()
         {
-            ViewBag.ContactTypeID = new SelectList(db.ContactTypes, "ContactTypeID", "ContactTypeName");
-            ViewBag.PersonID = new SelectList(db.Persons, "PersonID", "FirstName");
+            ViewBag.ContactTypeID = new SelectList(_uow.ContactTypes.All, "ContactTypeID", "ContactTypeName");
+            ViewBag.PersonID = new SelectList(_uow.Persons.All, "PersonID", "FirstName");
             return View();
         }
 
@@ -56,13 +62,13 @@ namespace Web.Controllers
         {
             if (ModelState.IsValid)
             {
-                _contactRepository.Add(contact);
-                _contactRepository.SaveChanges();
+                _uow.Contacts.Add(contact);
+                _uow.Commit();
                 return RedirectToAction("Index");
             }
 
-            ViewBag.ContactTypeID = new SelectList(db.ContactTypes, "ContactTypeID", "ContactTypeName", contact.ContactTypeID);
-            ViewBag.PersonID = new SelectList(db.Persons, "PersonID", "FirstName", contact.PersonID);
+            ViewBag.ContactTypeID = new SelectList(_uow.ContactTypes.All, "ContactTypeID", "ContactTypeName", contact.ContactTypeID);
+            ViewBag.PersonID = new SelectList(_uow.Persons.All, "PersonID", "FirstName", contact.PersonID);
             return View(contact);
         }
 
@@ -73,13 +79,13 @@ namespace Web.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Contact contact = _contactRepository.GetById(id);
+            Contact contact = _uow.Contacts.GetById(id);
             if (contact == null)
             {
                 return HttpNotFound();
             }
-            ViewBag.ContactTypeID = new SelectList(db.ContactTypes, "ContactTypeID", "ContactTypeName", contact.ContactTypeID);
-            ViewBag.PersonID = new SelectList(db.Persons, "PersonID", "FirstName", contact.PersonID);
+            ViewBag.ContactTypeID = new SelectList(_uow.ContactTypes.All, "ContactTypeID", "ContactTypeName", contact.ContactTypeID);
+            ViewBag.PersonID = new SelectList(_uow.Persons.All, "PersonID", "FirstName", contact.PersonID);
             return View(contact);
         }
 
@@ -92,12 +98,12 @@ namespace Web.Controllers
         {
             if (ModelState.IsValid)
             {
-                _contactRepository.Update(contact);
-                _contactRepository.SaveChanges();
+                _uow.Contacts.Update(contact);
+                _uow.Commit();
                 return RedirectToAction("Index");
             }
-            ViewBag.ContactTypeID = new SelectList(db.ContactTypes, "ContactTypeID", "ContactTypeName", contact.ContactTypeID);
-            ViewBag.PersonID = new SelectList(db.Persons, "PersonID", "FirstName", contact.PersonID);
+            ViewBag.ContactTypeID = new SelectList(_uow.ContactTypes.All, "ContactTypeID", "ContactTypeName", contact.ContactTypeID);
+            ViewBag.PersonID = new SelectList(_uow.Persons.All, "PersonID", "FirstName", contact.PersonID);
             return View(contact);
         }
 
@@ -108,7 +114,7 @@ namespace Web.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Contact contact = _contactRepository.GetById(id);
+            Contact contact = _uow.Contacts.GetById(id);
             if (contact == null)
             {
                 return HttpNotFound();
@@ -121,8 +127,8 @@ namespace Web.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int id)
         {
-            _contactRepository.Delete(id);
-            _contactRepository.SaveChanges();
+            _uow.Contacts.Delete(id);
+            _uow.Commit();
             return RedirectToAction("Index");
         }
 
@@ -130,7 +136,7 @@ namespace Web.Controllers
         {
             if (disposing)
             {
-                _contactRepository.Dispose();
+                _uow.Contacts.Dispose();
             }
             base.Dispose(disposing);
         }

@@ -16,12 +16,13 @@ namespace Web.Models
             // Add custom user claims here
             return userIdentity;
         }
+        //custom fields here
     }
 
     public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     {
         public ApplicationDbContext()
-            : base("DefaultConnection", throwIfV1Schema: false)
+            : base("DbConnectionString", throwIfV1Schema: false)
         {
         }
 

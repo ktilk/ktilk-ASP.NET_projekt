@@ -15,13 +15,19 @@ namespace Web.Controllers
 {
     public class PlansController : Controller
     {
-        private GymDbContext db = new GymDbContext();
-        private readonly IPlanRepository _planRepository = new PlanRepository(new GymDbContext());
+        private readonly IUOW _uow;
+
+        public PlansController(IUOW uow)
+        {
+            _uow = uow;
+        }
+
         // GET: Plans
         public ActionResult Index()
         {
-            var plans = db.Plans.Include(p => p.PlanType);
-            return View(_planRepository.All);
+            var vm = _uow.Plans.All;
+            //var plans = db.Plans.Include(p => p.PlanType);
+            return View(vm);
         }
 
         // GET: Plans/Details/5
@@ -31,7 +37,7 @@ namespace Web.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Plan plan = _planRepository.GetById(id);
+            Plan plan = _uow.Plans.GetById(id);
             if (plan == null)
             {
                 return HttpNotFound();
@@ -42,7 +48,7 @@ namespace Web.Controllers
         // GET: Plans/Create
         public ActionResult Create()
         {
-            ViewBag.PlanTypeID = new SelectList(db.PlanTypes, "PlanTypeID", "PlanTypeName");
+            ViewBag.PlanTypeID = new SelectList(_uow.PlanTypes.All, "PlanTypeID", "PlanTypeName");
             return View();
         }
 
@@ -55,12 +61,12 @@ namespace Web.Controllers
         {
             if (ModelState.IsValid)
             {
-                _planRepository.Add(plan);
-                _planRepository.SaveChanges();
+                _uow.Plans.Add(plan);
+                _uow.Commit();
                 return RedirectToAction("Index");
             }
 
-            ViewBag.PlanTypeID = new SelectList(db.PlanTypes, "PlanTypeID", "PlanTypeName", plan.PlanTypeID);
+            ViewBag.PlanTypeID = new SelectList(_uow.PlanTypes.All, "PlanTypeID", "PlanTypeName", plan.PlanTypeID);
             return View(plan);
         }
 
@@ -71,12 +77,12 @@ namespace Web.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Plan plan = _planRepository.GetById(id);
+            Plan plan = _uow.Plans.GetById(id);
             if (plan == null)
             {
                 return HttpNotFound();
             }
-            ViewBag.PlanTypeID = new SelectList(db.PlanTypes, "PlanTypeID", "PlanTypeName", plan.PlanTypeID);
+            ViewBag.PlanTypeID = new SelectList(_uow.PlanTypes.All, "PlanTypeID", "PlanTypeName", plan.PlanTypeID);
             return View(plan);
         }
 
@@ -89,11 +95,11 @@ namespace Web.Controllers
         {
             if (ModelState.IsValid)
             {
-                _planRepository.Update(plan);
-                _planRepository.SaveChanges();
+                _uow.Plans.Update(plan);
+                _uow.Commit();
                 return RedirectToAction("Index");
             }
-            ViewBag.PlanTypeID = new SelectList(db.PlanTypes, "PlanTypeID", "PlanTypeName", plan.PlanTypeID);
+            ViewBag.PlanTypeID = new SelectList(_uow.PlanTypes.All, "PlanTypeID", "PlanTypeName", plan.PlanTypeID);
             return View(plan);
         }
 
@@ -104,7 +110,7 @@ namespace Web.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Plan plan = _planRepository.GetById(id);
+            Plan plan = _uow.Plans.GetById(id);
             if (plan == null)
             {
                 return HttpNotFound();
@@ -117,8 +123,8 @@ namespace Web.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int id)
         {
-            _planRepository.Delete(id);
-            _planRepository.SaveChanges();
+            _uow.Plans.Delete(id);
+            _uow.Commit();
             return RedirectToAction("Index");
         }
 
@@ -126,7 +132,7 @@ namespace Web.Controllers
         {
             if (disposing)
             {
-                _planRepository.Dispose();
+                _uow.Plans.Dispose();
             }
             base.Dispose(disposing);
         }

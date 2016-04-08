@@ -15,12 +15,17 @@ namespace Web.Controllers
 {
     public class ExerciseTypesController : Controller
     {
-        //private GymDbContext db = new GymDbContext();
-        private readonly IExerciseTypeRepository _exerciseTypeRepository = new ExerciseTypeRepository(new GymDbContext());
+        private readonly IUOW _uow;
+
+        public ExerciseTypesController(IUOW uow)
+        {
+            _uow = uow;
+        }
+
         // GET: ExerciseTypes
         public ActionResult Index()
         {
-            return View(_exerciseTypeRepository.All);
+            return View(_uow.ExerciseTypes.All);
         }
 
         // GET: ExerciseTypes/Details/5
@@ -30,7 +35,7 @@ namespace Web.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            ExerciseType exerciseType = _exerciseTypeRepository.GetById(id);
+            ExerciseType exerciseType = _uow.ExerciseTypes.GetById(id);
             if (exerciseType == null)
             {
                 return HttpNotFound();
@@ -53,8 +58,8 @@ namespace Web.Controllers
         {
             if (ModelState.IsValid)
             {
-                _exerciseTypeRepository.Add(exerciseType);
-                _exerciseTypeRepository.SaveChanges();
+                _uow.ExerciseTypes.Add(exerciseType);
+                _uow.Commit();
                 return RedirectToAction("Index");
             }
 
@@ -68,7 +73,7 @@ namespace Web.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            ExerciseType exerciseType = _exerciseTypeRepository.GetById(id);
+            ExerciseType exerciseType = _uow.ExerciseTypes.GetById(id);
             if (exerciseType == null)
             {
                 return HttpNotFound();
@@ -85,8 +90,8 @@ namespace Web.Controllers
         {
             if (ModelState.IsValid)
             {
-                _exerciseTypeRepository.Update(exerciseType);
-                _exerciseTypeRepository.SaveChanges();
+                _uow.ExerciseTypes.Update(exerciseType);
+                _uow.Commit();
                 return RedirectToAction("Index");
             }
             return View(exerciseType);
@@ -99,7 +104,7 @@ namespace Web.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            ExerciseType exerciseType = _exerciseTypeRepository.GetById(id);
+            ExerciseType exerciseType = _uow.ExerciseTypes.GetById(id);
             if (exerciseType == null)
             {
                 return HttpNotFound();
@@ -112,8 +117,8 @@ namespace Web.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int id)
         {
-            _exerciseTypeRepository.Delete(id);
-            _exerciseTypeRepository.SaveChanges();
+            _uow.ExerciseTypes.Delete(id);
+            _uow.Commit();
             return RedirectToAction("Index");
         }
 
@@ -121,7 +126,7 @@ namespace Web.Controllers
         {
             if (disposing)
             {
-                _exerciseTypeRepository.Dispose();
+                _uow.ExerciseTypes.Dispose();
             }
             base.Dispose(disposing);
         }

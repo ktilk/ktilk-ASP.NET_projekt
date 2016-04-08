@@ -16,11 +16,18 @@ namespace Web.Controllers
     public class CompetitionsController : Controller
     {
         //private GymDbContext db = new GymDbContext();
-        private readonly ICompetitionRepository _competitionRepository = new CompetitionRepository(new GymDbContext());
+        private readonly IUOW _uow;
+
+        public CompetitionsController(IUOW uow)
+        {
+            _uow = uow;
+        }
+
         // GET: Competitions
         public ActionResult Index()
         {
-            return View(_competitionRepository.All);
+            var vm = _uow.Competitions.All;
+            return View(vm);
         }
 
         // GET: Competitions/Details/5
@@ -30,7 +37,7 @@ namespace Web.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Competition competition = _competitionRepository.GetById(id);
+            Competition competition = _uow.Competitions.GetById(id);
             if (competition == null)
             {
                 return HttpNotFound();
@@ -53,8 +60,8 @@ namespace Web.Controllers
         {
             if (ModelState.IsValid)
             {
-                _competitionRepository.Add(competition);
-                _competitionRepository.SaveChanges();
+                _uow.Competitions.Add(competition);
+                _uow.Commit();
                 return RedirectToAction("Index");
             }
 
@@ -68,7 +75,7 @@ namespace Web.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Competition competition = _competitionRepository.GetById(id);
+            Competition competition = _uow.Competitions.GetById(id);
             if (competition == null)
             {
                 return HttpNotFound();
@@ -85,8 +92,8 @@ namespace Web.Controllers
         {
             if (ModelState.IsValid)
             {
-                _competitionRepository.Update(competition);
-                _competitionRepository.SaveChanges();
+                _uow.Competitions.Update(competition);
+                _uow.Commit();
                 return RedirectToAction("Index");
             }
             return View(competition);
@@ -99,7 +106,7 @@ namespace Web.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Competition competition = _competitionRepository.GetById(id);
+            Competition competition = _uow.Competitions.GetById(id);
             if (competition == null)
             {
                 return HttpNotFound();
@@ -112,8 +119,8 @@ namespace Web.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int id)
         {
-            _competitionRepository.Delete(id);
-            _competitionRepository.SaveChanges();
+            _uow.Competitions.Delete(id);
+            _uow.Commit();
             return RedirectToAction("Index");
         }
 
@@ -121,7 +128,7 @@ namespace Web.Controllers
         {
             if (disposing)
             {
-                _competitionRepository.Dispose();
+                _uow.Competitions.Dispose();
             }
             base.Dispose(disposing);
         }

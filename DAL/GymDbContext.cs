@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using DAL.Interfaces;
 using DAL.Migrations;
 using Domain;
+using Domain.Identity;
 
 namespace DAL
 {
@@ -22,16 +23,23 @@ namespace DAL
 #endif
         }
 
-        public DbSet<Person> Persons { get; set; }
-        public DbSet<Competition> Competitions { get; set; }
-        public DbSet<Contact> Contacts { get; set; }
-        public DbSet<ContactType> ContactTypes { get; set; }
-        public DbSet<Exercise> Exercises { get; set; }
-        public DbSet<ExerciseInWorkout> ExercisesInWorkouts { get; set; }
-        public DbSet<ExerciseType> ExerciseTypes { get; set; }
-        public DbSet<Participation> Participations { get; set; }
-        public DbSet<Plan> Plans { get; set; }
-        public DbSet<PlanType> PlanTypes { get; set; }
-        public DbSet<Workout> Workouts { get; set; }
+        public IDbSet<Person> Persons { get; set; }
+        public IDbSet<Competition> Competitions { get; set; }
+        public IDbSet<Contact> Contacts { get; set; }
+        public IDbSet<ContactType> ContactTypes { get; set; }
+        public IDbSet<Exercise> Exercises { get; set; }
+        public IDbSet<ExerciseInWorkout> ExercisesInWorkouts { get; set; }
+        public IDbSet<ExerciseType> ExerciseTypes { get; set; }
+        public IDbSet<Participation> Participations { get; set; }
+        public IDbSet<Plan> Plans { get; set; }
+        public IDbSet<PlanType> PlanTypes { get; set; }
+        public IDbSet<Workout> Workouts { get; set; }
+
+        // Identity tables, PK - int
+        public IDbSet<RoleInt> RolesInt { get; set; }
+        public IDbSet<UserClaimInt> UserClaimsInt { get; set; }
+        public IDbSet<UserLoginInt> UserLoginsInt { get; set; }
+        public IDbSet<UserInt> UsersInt { get; set; }
+        public IDbSet<UserRoleInt> UserRolesInt { get; set; }
     }
 }

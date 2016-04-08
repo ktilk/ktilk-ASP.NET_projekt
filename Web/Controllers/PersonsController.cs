@@ -17,17 +17,19 @@ namespace Web.Controllers
     {
         //private GymDbContext db = new GymDbContext();
 
-        private readonly IPersonRepository _personRepository;// = new PersonRepository(new GymDbContext());
+        //private readonly IPersonRepository _personRepository;
 
-        public PersonsController(IPersonRepository personRepository)
+        private readonly IUOW _uow;
+
+        public PersonsController(IUOW uow)
         {
-            _personRepository = personRepository;
+            _uow = uow;
         }
 
         // GET: Persons
         public ActionResult Index()
         {
-            var vm = _personRepository.GetPersonWithContactCounts();
+            var vm = _uow.Persons.GetPersonWithContactCounts();
             return View(vm);
         }
 
@@ -38,7 +40,7 @@ namespace Web.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Person person = _personRepository.GetById(id);
+            Person person = _uow.Persons.GetById(id);
             if (person == null)
             {
                 return HttpNotFound();
@@ -61,8 +63,8 @@ namespace Web.Controllers
         {
             if (ModelState.IsValid)
             {
-                _personRepository.Add(person);
-                _personRepository.SaveChanges();
+                _uow.Persons.Add(person);
+                _uow.Commit();
                 return RedirectToAction("Index");
             }
 
@@ -76,7 +78,7 @@ namespace Web.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Person person = _personRepository.GetById(id);
+            Person person = _uow.Persons.GetById(id);
             if (person == null)
             {
                 return HttpNotFound();
@@ -93,8 +95,8 @@ namespace Web.Controllers
         {
             if (ModelState.IsValid)
             {
-                _personRepository.Update(person);
-                _personRepository.SaveChanges();
+                _uow.Persons.Update(person);
+                _uow.Commit();
                 return RedirectToAction("Index");
             }
             return View(person);
@@ -107,7 +109,7 @@ namespace Web.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Person person = _personRepository.GetById(id);
+            Person person = _uow.Persons.GetById(id);
             if (person == null)
             {
                 return HttpNotFound();
@@ -120,8 +122,8 @@ namespace Web.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int id)
         {
-            _personRepository.Delete(id);
-            _personRepository.SaveChanges();
+            _uow.Persons.Delete(id);
+            _uow.Commit();
             return RedirectToAction("Index");
         }
 
@@ -129,7 +131,7 @@ namespace Web.Controllers
         {
             if (disposing)
             {
-                _personRepository.Dispose();
+                _uow.Persons.Dispose();
             }
             base.Dispose(disposing);
         }

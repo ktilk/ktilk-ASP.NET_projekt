@@ -15,13 +15,18 @@ namespace Web.Controllers
 {
     public class ExerciseInWorkoutsController : Controller
     {
-        private GymDbContext db = new GymDbContext();
-        private readonly IExerciseInWorkoutRepository _exerciseInWorkoutRepository = new ExerciseInWorkoutRepository(new GymDbContext());
+        private readonly IUOW _uow;
+
+        public ExerciseInWorkoutsController(IUOW uow)
+        {
+            _uow = uow;
+        }
+
         // GET: ExerciseInWorkouts
         public ActionResult Index()
         {
             //var exercisesInWorkouts = db.ExercisesInWorkouts.Include(e => e.Exercise).Include(e => e.Workout);
-            return View(_exerciseInWorkoutRepository.All);
+            return View(_uow.ExerciseInWorkouts.All);
         }
 
         // GET: ExerciseInWorkouts/Details/5
@@ -31,7 +36,7 @@ namespace Web.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            ExerciseInWorkout exerciseInWorkout = _exerciseInWorkoutRepository.GetById(id);
+            ExerciseInWorkout exerciseInWorkout = _uow.ExerciseInWorkouts.GetById(id);
             if (exerciseInWorkout == null)
             {
                 return HttpNotFound();
@@ -42,8 +47,8 @@ namespace Web.Controllers
         // GET: ExerciseInWorkouts/Create
         public ActionResult Create()
         {
-            ViewBag.ExerciseID = new SelectList(db.Exercises, "ExerciseID", "ExerciseName");
-            ViewBag.WorkoutID = new SelectList(db.Workouts, "WorkoutID", "Duration");
+            ViewBag.ExerciseID = new SelectList(_uow.Exercises.All, "ExerciseID", "ExerciseName");
+            ViewBag.WorkoutID = new SelectList(_uow.Workouts.All, "WorkoutID", "Duration");
             return View();
         }
 
@@ -56,13 +61,13 @@ namespace Web.Controllers
         {
             if (ModelState.IsValid)
             {
-                _exerciseInWorkoutRepository.Add(exerciseInWorkout);
-                _exerciseInWorkoutRepository.SaveChanges();
+                _uow.ExerciseInWorkouts.Add(exerciseInWorkout);
+                _uow.Commit();
                 return RedirectToAction("Index");
             }
 
-            ViewBag.ExerciseID = new SelectList(db.Exercises, "ExerciseID", "ExerciseName", exerciseInWorkout.ExerciseID);
-            ViewBag.WorkoutID = new SelectList(db.Workouts, "WorkoutID", "Duration", exerciseInWorkout.WorkoutID);
+            ViewBag.ExerciseID = new SelectList(_uow.Exercises.All, "ExerciseID", "ExerciseName", exerciseInWorkout.ExerciseID);
+            ViewBag.WorkoutID = new SelectList(_uow.Workouts.All, "WorkoutID", "Duration", exerciseInWorkout.WorkoutID);
             return View(exerciseInWorkout);
         }
 
@@ -73,13 +78,13 @@ namespace Web.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            ExerciseInWorkout exerciseInWorkout = _exerciseInWorkoutRepository.GetById(id);
+            ExerciseInWorkout exerciseInWorkout = _uow.ExerciseInWorkouts.GetById(id);
             if (exerciseInWorkout == null)
             {
                 return HttpNotFound();
             }
-            ViewBag.ExerciseID = new SelectList(db.Exercises, "ExerciseID", "ExerciseName", exerciseInWorkout.ExerciseID);
-            ViewBag.WorkoutID = new SelectList(db.Workouts, "WorkoutID", "Duration", exerciseInWorkout.WorkoutID);
+            ViewBag.ExerciseID = new SelectList(_uow.Exercises.All, "ExerciseID", "ExerciseName", exerciseInWorkout.ExerciseID);
+            ViewBag.WorkoutID = new SelectList(_uow.Workouts.All, "WorkoutID", "Duration", exerciseInWorkout.WorkoutID);
             return View(exerciseInWorkout);
         }
 
@@ -92,12 +97,12 @@ namespace Web.Controllers
         {
             if (ModelState.IsValid)
             {
-                _exerciseInWorkoutRepository.Update(exerciseInWorkout);
-                _exerciseInWorkoutRepository.SaveChanges();
+                _uow.ExerciseInWorkouts.Update(exerciseInWorkout);
+                _uow.Commit();
                 return RedirectToAction("Index");
             }
-            ViewBag.ExerciseID = new SelectList(db.Exercises, "ExerciseID", "ExerciseName", exerciseInWorkout.ExerciseID);
-            ViewBag.WorkoutID = new SelectList(db.Workouts, "WorkoutID", "Duration", exerciseInWorkout.WorkoutID);
+            ViewBag.ExerciseID = new SelectList(_uow.Exercises.All, "ExerciseID", "ExerciseName", exerciseInWorkout.ExerciseID);
+            ViewBag.WorkoutID = new SelectList(_uow.Workouts.All, "WorkoutID", "Duration", exerciseInWorkout.WorkoutID);
             return View(exerciseInWorkout);
         }
 
@@ -108,7 +113,7 @@ namespace Web.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            ExerciseInWorkout exerciseInWorkout = _exerciseInWorkoutRepository.GetById(id);
+            ExerciseInWorkout exerciseInWorkout = _uow.ExerciseInWorkouts.GetById(id);
             if (exerciseInWorkout == null)
             {
                 return HttpNotFound();
@@ -121,8 +126,8 @@ namespace Web.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int id)
         {
-            _exerciseInWorkoutRepository.Delete(id);
-            _exerciseInWorkoutRepository.SaveChanges();
+            _uow.ExerciseInWorkouts.Delete(id);
+            _uow.Commit();
             return RedirectToAction("Index");
         }
 
@@ -130,7 +135,7 @@ namespace Web.Controllers
         {
             if (disposing)
             {
-                _exerciseInWorkoutRepository.Dispose();
+                _uow.ExerciseInWorkouts.Dispose();
             }
             base.Dispose(disposing);
         }

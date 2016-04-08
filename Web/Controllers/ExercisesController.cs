@@ -15,14 +15,18 @@ namespace Web.Controllers
 {
     public class ExercisesController : Controller
     {
-        private GymDbContext db = new GymDbContext();
-        private readonly IExerciseRepository _exerciseRepository = new ExerciseRepository(new GymDbContext());
+        private readonly IUOW _uow;
+
+        public ExercisesController(IUOW uow)
+        {
+            _uow = uow;
+        }
 
         // GET: Exercises
         public ActionResult Index()
         {
             //var exercises = db.Exercises.Include(e => e.ExerciseType);
-            return View(_exerciseRepository.All);
+            return View(_uow.Exercises.All);
         }
 
         // GET: Exercises/Details/5
@@ -32,7 +36,7 @@ namespace Web.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Exercise exercise = _exerciseRepository.GetById(id);
+            Exercise exercise = _uow.Exercises.GetById(id);
             if (exercise == null)
             {
                 return HttpNotFound();
@@ -43,7 +47,7 @@ namespace Web.Controllers
         // GET: Exercises/Create
         public ActionResult Create()
         {
-            ViewBag.ExerciseTypeID = new SelectList(db.ExerciseTypes, "ExerciseTypeID", "ExerciseTypeName");
+            ViewBag.ExerciseTypeID = new SelectList(_uow.ExerciseTypes.All, "ExerciseTypeID", "ExerciseTypeName");
             return View();
         }
 
@@ -56,12 +60,12 @@ namespace Web.Controllers
         {
             if (ModelState.IsValid)
             {
-                _exerciseRepository.Add(exercise);
-                _exerciseRepository.SaveChanges();
+                _uow.Exercises.Add(exercise);
+                _uow.Commit();
                 return RedirectToAction("Index");
             }
 
-            ViewBag.ExerciseTypeID = new SelectList(db.ExerciseTypes, "ExerciseTypeID", "ExerciseTypeName", exercise.ExerciseTypeID);
+            ViewBag.ExerciseTypeID = new SelectList(_uow.ExerciseTypes.All, "ExerciseTypeID", "ExerciseTypeName", exercise.ExerciseTypeID);
             return View(exercise);
         }
 
@@ -72,12 +76,12 @@ namespace Web.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Exercise exercise = _exerciseRepository.GetById(id);
+            Exercise exercise = _uow.Exercises.GetById(id);
             if (exercise == null)
             {
                 return HttpNotFound();
             }
-            ViewBag.ExerciseTypeID = new SelectList(db.ExerciseTypes, "ExerciseTypeID", "ExerciseTypeName", exercise.ExerciseTypeID);
+            ViewBag.ExerciseTypeID = new SelectList(_uow.ExerciseTypes.All, "ExerciseTypeID", "ExerciseTypeName", exercise.ExerciseTypeID);
             return View(exercise);
         }
 
@@ -90,11 +94,11 @@ namespace Web.Controllers
         {
             if (ModelState.IsValid)
             {
-                _exerciseRepository.Update(exercise);
-                _exerciseRepository.SaveChanges();
+                _uow.Exercises.Update(exercise);
+                _uow.Commit();
                 return RedirectToAction("Index");
             }
-            ViewBag.ExerciseTypeID = new SelectList(db.ExerciseTypes, "ExerciseTypeID", "ExerciseTypeName", exercise.ExerciseTypeID);
+            ViewBag.ExerciseTypeID = new SelectList(_uow.ExerciseTypes.All, "ExerciseTypeID", "ExerciseTypeName", exercise.ExerciseTypeID);
             return View(exercise);
         }
 
@@ -105,7 +109,7 @@ namespace Web.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Exercise exercise = _exerciseRepository.GetById(id);
+            Exercise exercise = _uow.Exercises.GetById(id);
             if (exercise == null)
             {
                 return HttpNotFound();
@@ -118,8 +122,8 @@ namespace Web.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int id)
         {
-            _exerciseRepository.Delete(id);
-            _exerciseRepository.SaveChanges();
+            _uow.Exercises.Delete(id);
+            _uow.Commit();
             return RedirectToAction("Index");
         }
 
@@ -127,7 +131,7 @@ namespace Web.Controllers
         {
             if (disposing)
             {
-                _exerciseRepository.Dispose();
+                _uow.Exercises.Dispose();
             }
             base.Dispose(disposing);
         }

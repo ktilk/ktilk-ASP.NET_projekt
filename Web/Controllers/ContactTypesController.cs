@@ -13,15 +13,21 @@ using Domain;
 
 namespace Web.Controllers
 {
+    //[Authorize]
     public class ContactTypesController : Controller
     {
         //private GymDbContext db = new GymDbContext();
-        private readonly IContactTypeRepository _contactTypeRepository = new ContactTypeRepository(new GymDbContext());
+        private readonly IUOW _uow;
+
+        public ContactTypesController(IUOW uow)
+        {
+            _uow = uow;
+        }
 
         // GET: ContactTypes
         public ActionResult Index()
         {
-            return View(_contactTypeRepository.All);
+            return View(_uow.ContactTypes.All);
         }
 
         // GET: ContactTypes/Details/5
@@ -31,7 +37,7 @@ namespace Web.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            ContactType contactType = _contactTypeRepository.GetById(id);
+            ContactType contactType = _uow.ContactTypes.GetById(id);
             if (contactType == null)
             {
                 return HttpNotFound();
@@ -54,8 +60,8 @@ namespace Web.Controllers
         {
             if (ModelState.IsValid)
             {
-                _contactTypeRepository.Add(contactType);
-                _contactTypeRepository.SaveChanges();
+                _uow.ContactTypes.Add(contactType);
+                _uow.Commit();
                 return RedirectToAction("Index");
             }
 
@@ -69,7 +75,7 @@ namespace Web.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            ContactType contactType = _contactTypeRepository.GetById(id);
+            ContactType contactType = _uow.ContactTypes.GetById(id);
             if (contactType == null)
             {
                 return HttpNotFound();
@@ -86,8 +92,8 @@ namespace Web.Controllers
         {
             if (ModelState.IsValid)
             {
-                _contactTypeRepository.Update(contactType);
-                _contactTypeRepository.SaveChanges();
+                _uow.ContactTypes.Update(contactType);
+                _uow.Commit();
                 return RedirectToAction("Index");
             }
             return View(contactType);
@@ -100,7 +106,7 @@ namespace Web.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            ContactType contactType = _contactTypeRepository.GetById(id);
+            ContactType contactType = _uow.ContactTypes.GetById(id);
             if (contactType == null)
             {
                 return HttpNotFound();
@@ -113,8 +119,8 @@ namespace Web.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int id)
         {
-            _contactTypeRepository.Delete(id);
-            _contactTypeRepository.SaveChanges();
+            _uow.ContactTypes.Delete(id);
+            _uow.Commit();
             return RedirectToAction("Index");
         }
 
@@ -122,7 +128,7 @@ namespace Web.Controllers
         {
             if (disposing)
             {
-                _contactTypeRepository.Dispose();
+                _uow.ContactTypes.Dispose();
             }
             base.Dispose(disposing);
         }

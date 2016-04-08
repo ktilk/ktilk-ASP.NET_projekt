@@ -15,13 +15,19 @@ namespace Web.Controllers
 {
     public class WorkoutsController : Controller
     {
-        private GymDbContext db = new GymDbContext();
-        private readonly IWorkoutRepository _workoutRepository = new WorkoutRepository(new GymDbContext());
+        private readonly IUOW _uow;
+
+        public WorkoutsController(IUOW uow)
+        {
+            _uow = uow;
+        }
+
         // GET: Workouts
         public ActionResult Index()
         {
-            var workouts = db.Workouts.Include(w => w.Plan);
-            return View(_workoutRepository.All);
+            var vm = _uow.Workouts.All;
+            //var workouts = db.Workouts.Include(w => w.Plan);
+            return View(vm);
         }
 
         // GET: Workouts/Details/5
@@ -31,7 +37,7 @@ namespace Web.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Workout workout = _workoutRepository.GetById(id);
+            Workout workout = _uow.Workouts.GetById(id);
             if (workout == null)
             {
                 return HttpNotFound();
@@ -42,7 +48,7 @@ namespace Web.Controllers
         // GET: Workouts/Create
         public ActionResult Create()
         {
-            ViewBag.PlanID = new SelectList(db.Plans, "PlanID", "PlanName");
+            ViewBag.PlanID = new SelectList(_uow.Plans.All, "PlanID", "PlanName");
             return View();
         }
 
@@ -55,12 +61,12 @@ namespace Web.Controllers
         {
             if (ModelState.IsValid)
             {
-                _workoutRepository.Add(workout);
-                _workoutRepository.SaveChanges();
+                _uow.Workouts.Add(workout);
+                _uow.Commit();
                 return RedirectToAction("Index");
             }
 
-            ViewBag.PlanID = new SelectList(db.Plans, "PlanID", "PlanName", workout.PlanID);
+            ViewBag.PlanID = new SelectList(_uow.Plans.All, "PlanID", "PlanName", workout.PlanID);
             return View(workout);
         }
 
@@ -71,12 +77,12 @@ namespace Web.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Workout workout = _workoutRepository.GetById(id);
+            Workout workout = _uow.Workouts.GetById(id);
             if (workout == null)
             {
                 return HttpNotFound();
             }
-            ViewBag.PlanID = new SelectList(db.Plans, "PlanID", "PlanName", workout.PlanID);
+            ViewBag.PlanID = new SelectList(_uow.Plans.All, "PlanID", "PlanName", workout.PlanID);
             return View(workout);
         }
 
@@ -89,11 +95,11 @@ namespace Web.Controllers
         {
             if (ModelState.IsValid)
             {
-                _workoutRepository.Update(workout);
-                _workoutRepository.SaveChanges();
+                _uow.Workouts.Update(workout);
+                _uow.Commit();
                 return RedirectToAction("Index");
             }
-            ViewBag.PlanID = new SelectList(db.Plans, "PlanID", "PlanName", workout.PlanID);
+            ViewBag.PlanID = new SelectList(_uow.Plans.All, "PlanID", "PlanName", workout.PlanID);
             return View(workout);
         }
 
@@ -104,7 +110,7 @@ namespace Web.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Workout workout = _workoutRepository.GetById(id);
+            Workout workout = _uow.Workouts.GetById(id);
             if (workout == null)
             {
                 return HttpNotFound();
@@ -117,8 +123,8 @@ namespace Web.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int id)
         {
-            _workoutRepository.Delete(id);
-            _workoutRepository.SaveChanges();
+            _uow.Workouts.Delete(id);
+            _uow.Commit();
             return RedirectToAction("Index");
         }
 
@@ -126,7 +132,7 @@ namespace Web.Controllers
         {
             if (disposing)
             {
-                _workoutRepository.Dispose();
+                _uow.Workouts.Dispose();
             }
             base.Dispose(disposing);
         }

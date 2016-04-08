@@ -15,13 +15,19 @@ namespace Web.Controllers
 {
     public class ParticipationsController : Controller
     {
-        private GymDbContext db = new GymDbContext();
-        private readonly IParticipationRepository _participationRepository = new ParticipationRepository(new GymDbContext());
+        private readonly IUOW _uow;
+
+        public ParticipationsController(IUOW uow)
+        {
+            _uow = uow;
+        }
+
         // GET: Participations
         public ActionResult Index()
         {
-            var participations = db.Participations.Include(p => p.Competition).Include(p => p.Person);
-            return View(_participationRepository.All);
+            var vm = _uow.Participations.All;
+            //var participations = db.Participations.Include(p => p.Competition).Include(p => p.Person);
+            return View(vm);
         }
 
         // GET: Participations/Details/5
@@ -31,7 +37,7 @@ namespace Web.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Participation participation = _participationRepository.GetById(id);
+            Participation participation = _uow.Participations.GetById(id);
             if (participation == null)
             {
                 return HttpNotFound();
@@ -42,8 +48,8 @@ namespace Web.Controllers
         // GET: Participations/Create
         public ActionResult Create()
         {
-            ViewBag.CompetitionID = new SelectList(db.Competitions, "CompetitionID", "CompetitionName");
-            ViewBag.PersonID = new SelectList(db.Persons, "PersonID", "FirstName");
+            ViewBag.CompetitionID = new SelectList(_uow.Competitions.All, "CompetitionID", "CompetitionName");
+            ViewBag.PersonID = new SelectList(_uow.Persons.All, "PersonID", "FirstName");
             return View();
         }
 
@@ -56,13 +62,13 @@ namespace Web.Controllers
         {
             if (ModelState.IsValid)
             {
-                _participationRepository.Add(participation);
-                _participationRepository.SaveChanges();
+                _uow.Participations.Add(participation);
+                _uow.Commit();
                 return RedirectToAction("Index");
             }
 
-            ViewBag.CompetitionID = new SelectList(db.Competitions, "CompetitionID", "CompetitionName", participation.CompetitionID);
-            ViewBag.PersonID = new SelectList(db.Persons, "PersonID", "FirstName", participation.PersonID);
+            ViewBag.CompetitionID = new SelectList(_uow.Competitions.All, "CompetitionID", "CompetitionName", participation.CompetitionID);
+            ViewBag.PersonID = new SelectList(_uow.Persons.All, "PersonID", "FirstName", participation.PersonID);
             return View(participation);
         }
 
@@ -73,13 +79,13 @@ namespace Web.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Participation participation = _participationRepository.GetById(id);
+            Participation participation = _uow.Participations.GetById(id);
             if (participation == null)
             {
                 return HttpNotFound();
             }
-            ViewBag.CompetitionID = new SelectList(db.Competitions, "CompetitionID", "CompetitionName", participation.CompetitionID);
-            ViewBag.PersonID = new SelectList(db.Persons, "PersonID", "FirstName", participation.PersonID);
+            ViewBag.CompetitionID = new SelectList(_uow.Competitions.All, "CompetitionID", "CompetitionName", participation.CompetitionID);
+            ViewBag.PersonID = new SelectList(_uow.Persons.All, "PersonID", "FirstName", participation.PersonID);
             return View(participation);
         }
 
@@ -92,12 +98,12 @@ namespace Web.Controllers
         {
             if (ModelState.IsValid)
             {
-                _participationRepository.Update(participation);
-                _participationRepository.SaveChanges();
+                _uow.Participations.Update(participation);
+                _uow.Commit();
                 return RedirectToAction("Index");
             }
-            ViewBag.CompetitionID = new SelectList(db.Competitions, "CompetitionID", "CompetitionName", participation.CompetitionID);
-            ViewBag.PersonID = new SelectList(db.Persons, "PersonID", "FirstName", participation.PersonID);
+            ViewBag.CompetitionID = new SelectList(_uow.Competitions.All, "CompetitionID", "CompetitionName", participation.CompetitionID);
+            ViewBag.PersonID = new SelectList(_uow.Persons.All, "PersonID", "FirstName", participation.PersonID);
             return View(participation);
         }
 
@@ -108,7 +114,7 @@ namespace Web.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Participation participation = _participationRepository.GetById(id);
+            Participation participation = _uow.Participations.GetById(id);
             if (participation == null)
             {
                 return HttpNotFound();
@@ -121,8 +127,8 @@ namespace Web.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int id)
         {
-            _participationRepository.Delete(id);
-            _participationRepository.SaveChanges();
+            _uow.Participations.Delete(id);
+            _uow.Commit();
             return RedirectToAction("Index");
         }
 
@@ -130,7 +136,7 @@ namespace Web.Controllers
         {
             if (disposing)
             {
-                _participationRepository.Dispose();
+                _uow.Participations.Dispose();
             }
             base.Dispose(disposing);
         }
