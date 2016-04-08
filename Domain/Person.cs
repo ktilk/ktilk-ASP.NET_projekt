@@ -9,6 +9,7 @@ namespace Domain
 {
     public class Person
     {
+        //TODO stringide pikkused piirata ja värki
         public int PersonID { get; set; }
         [Required]
         [MaxLength(128, ErrorMessageResourceName = "FirstNameLengthError", ErrorMessageResourceType = typeof(Resources.Domain))]
